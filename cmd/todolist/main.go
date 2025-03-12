@@ -14,8 +14,10 @@ func main() {
 	if err != nil {
 		//	log.Fatalf("Ошибка при загрузке .env файла: %v", err)
 	}
-	db := repository.ConnectDB()
-	defer db.Close(context.Background())
+	conn := repository.ConnectDB()
+	defer conn.Close(context.Background())
+
+	db := repository.TaskRepository{Conn: conn}
 
 	app := fiber.New()
 	app.Post("/tasks", handlers.AddTask(db))
