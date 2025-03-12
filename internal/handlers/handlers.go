@@ -70,8 +70,20 @@ func UpdateTask(repo repository.TaskRepository) fiber.Handler {
 
 func DeleteTask(repo repository.TaskRepository) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		id := c.Params("id")
-		return c.SendString(fmt.Sprintf("Task %s deleted", id))
+		idStr := c.Params("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "неправильный формат id",
+			})
+		}
+		err = repo.Delete(id)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": fmt.Sprint(err),
+			})
+		}
+		return nil
 	}
 }
 

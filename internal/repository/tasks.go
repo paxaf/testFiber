@@ -103,4 +103,13 @@ func (r *TaskRepository) Update(t models.Task, id int) error {
 	return nil
 }
 
-func (r *TaskRepository) Delete() {}
+func (r *TaskRepository) Delete(id int) error {
+	affectedRows, err := r.Conn.Exec(context.Background(), "DELETE FROM Tasks WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+	if affectedRows.RowsAffected() < 1 {
+		return fmt.Errorf("ни одна строка не была удалена")
+	}
+	return nil
+}
