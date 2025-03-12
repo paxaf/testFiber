@@ -53,11 +53,6 @@ func UpdateTask(repo repository.TaskRepository) fiber.Handler {
 			})
 		}
 		log.Println("параметры спаршены успешно")
-		if !params.IsValid() {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": "поле Title не может быть пустым",
-			})
-		}
 		err = repo.Update(*params, id)
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

@@ -78,14 +78,24 @@ func (r *TaskRepository) Get() ([]models.Task, error) {
 }
 
 func (r *TaskRepository) Update(t models.Task, id int) error {
+	var title string
+	var description string
+	var status string
+	err := r.Conn.QueryRow(context.Background(), "SELECT title, description, status FROM Tasks WHERE id = $1", id).Scan(&title, &description, &status)
+	if err != nil {
+		return err
+	}
+	// тут линер ругается на '!='
+	if !(t.Status == "in_progress" || t.Status == "done") {
+		t.Status = status
+	}
 
-	// у меня тут на '!=' ругался линтер
-	if !(t.Status == "done" || t.Status == "in_progress") {
-		row := r.Conn.QueryRow(context.Background(), "SELECT status FROM Tasks WHERE id = $1", id)
-		err := row.Scan(&t.Status)
-		if err != nil {
-			return err
-		}
+	if len(t.Title) < 1 {
+		t.Title = title
+	}
+
+	if len(t.Description) < 1 {
+		t.Description = description
 	}
 
 	affectedRows, err := r.Conn.Exec(context.Background(), "UPDATE Tasks SET title = $1, description = $2, status = $3, updated_at = now() WHERE id = $4",
