@@ -24,26 +24,42 @@ func AddTask(repo repository.TaskRepository) fiber.Handler {
 			})
 		}
 
+		err := repo.Add(*params)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "ошибка добавления задачи",
+			})
+		}
 		return c.SendStatus(fiber.StatusOK)
 	}
 }
 
-func UpdateTask(db repository.TaskRepository) fiber.Handler {
+func UpdateTask(repo repository.TaskRepository) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		return c.SendString(fmt.Sprintf("Task %s updated", id))
 	}
 }
 
-func DeleteTask(db repository.TaskRepository) fiber.Handler {
+func DeleteTask(repo repository.TaskRepository) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		return c.SendString(fmt.Sprintf("Task %s deleted", id))
 	}
 }
 
-func GetTask(db repository.TaskRepository) fiber.Handler {
+func GetTask(repo repository.TaskRepository) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.SendString("Task got")
+		tasks, err := repo.Get()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": fmt.Sprintf("ошибка: %v", err),
+			})
+		}
+		if len(tasks) == 0 {
+			return c.JSON(map[string]string{})
+		} else {
+			return c.JSON(tasks)
+		}
 	}
 }
