@@ -54,4 +54,9 @@ status - статус задачи, принимает только значен
 
 ## Скриншоты работоспособности
 
-
+![Получаем список текущих задач](screenshots/1.jpg)
+![Обновляем статус у одной из задач](screenshots/update.jpg)
+![Удаляем задачу](screenshots/DELETE.jpg)
+![Добавляем задачу](screenshots/add.jpg)
+![Заново получаем список задач](screenshots/Done.jpg)
+![Смотрим задачи в PostgresSQL](screenshots/PostgreS.jpg)
