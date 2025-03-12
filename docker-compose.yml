@@ -17,10 +17,12 @@ services:
       timeout: 5s
       retries: 5
   todolist:
-    image: paxaff/fibertest:v1.0.0
+    build: .
     ports:
       - "3000:3000"
     environment:
+      - HOST=0.0.0.0
+      - TODO_PORT=3000
       - TODO_DBUSER=tasks
       - TODO_DBPASS=tasks
       - TODO_DBHOST=postgres

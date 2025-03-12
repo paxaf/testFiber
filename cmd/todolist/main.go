@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -16,7 +18,7 @@ func main() {
 	}
 	conn := repository.ConnectDB()
 	defer conn.Close(context.Background())
-
+	// создаём структуру для хранения подключения
 	db := repository.TaskRepository{Conn: conn}
 
 	app := fiber.New()
@@ -24,5 +26,6 @@ func main() {
 	app.Get("/tasks", handlers.GetTask(db))
 	app.Delete("/tasks/:id", handlers.DeleteTask(db))
 	app.Put("/tasks/:id", handlers.UpdateTask(db))
-	app.Listen(":3000")
+
+	app.Listen(fmt.Sprintf(":%s", os.Getenv("TODO_PORT")))
 }
