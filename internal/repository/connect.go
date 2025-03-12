@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -10,17 +11,22 @@ import (
 )
 
 func ConnectDB() *pgx.Conn {
-	conn, err := pgx.Connect(context.Background(), "postgres://tasks:tasks@localhost:5432/dbname?sslmode=disable")
+
+	conn, err := pgx.Connect(context.Background(), fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		os.Getenv("TODO_DBUSER"),
+		os.Getenv("TODO_DBPASS"),
+		os.Getenv("TODO_DBHOST"),
+		os.Getenv("TODO_DBPORT"),
+		os.Getenv("TODO_DBNAME")))
 	if err != nil {
 		log.Fatalf("ошибка подключения к БД: %v", err)
 	}
-	// проверка соединения
+
 	err = conn.Ping(context.Background())
 	if err != nil {
 		log.Fatalf("невозможно установить соединение с БД: %v", err)
 	}
 	log.Println("Подключение с базой данных установлено")
-
 	filePath := "migration/001_init.sql"
 	workDir, err := os.Getwd()
 	if err != nil {
