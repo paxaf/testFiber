@@ -19,5 +19,4 @@ func (t *Task) IsValid() bool {
 	return len(strings.TrimSpace(t.Title)) > 0
 }
 
-const InputFormat string = "2006-01-02 15:04:05.999999"
 const OutputFormat string = "02/01/2006 15:04"
