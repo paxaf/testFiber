@@ -24,5 +24,5 @@ func main() {
 	app.Get("/tasks", handlers.GetTask(db))
 	app.Delete("/tasks/:id", handlers.DeleteTask(db))
 	app.Put("/tasks/:id", handlers.UpdateTask(db))
-	app.Listen(":8080")
+	app.Listen(":3000")
 }

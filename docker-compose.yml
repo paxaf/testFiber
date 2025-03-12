@@ -11,5 +11,23 @@ services:
       POSTGRES_DB: dbname
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tasks -d dbname"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  todolist:
+    image: paxaff/fibertest:v1.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      - TODO_DBUSER=tasks
+      - TODO_DBPASS=tasks
+      - TODO_DBHOST=postgres
+      - TODO_DBPORT=5432
+      - TODO_DBNAME=dbname
+    depends_on:
+      postgres:
+        condition: service_healthy
 volumes:
   pgdata:
