@@ -18,9 +18,9 @@ func main() {
 	defer db.Close(context.Background())
 
 	app := fiber.New()
-	app.Post("/tasks", handlers.AddTask)
-	app.Get("/tasks", handlers.GetTask)
-	app.Delete("/tasks/:id", handlers.DeleteTask)
-	app.Put("/tasks/:id", handlers.UpdateTask)
+	app.Post("/tasks", handlers.AddTask(db))
+	app.Get("/tasks", handlers.GetTask(db))
+	app.Delete("/tasks/:id", handlers.DeleteTask(db))
+	app.Put("/tasks/:id", handlers.UpdateTask(db))
 	app.Listen(":8080")
 }
